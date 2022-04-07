@@ -1,11 +1,10 @@
-import sqlalchemy
+from sqlalchemy import Column, Integer, String
 from .db_session import SqlAlchemyBase
 
 
 class User(SqlAlchemyBase):
     __tablename__ = 'users'
 
-    id = sqlalchemy.Column(sqlalchemy.Integer,
-                           primary_key=True)
-    first_name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    last_name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    id = Column(Integer, primary_key=True)
+    first_name = Column(String, nullable=True)
+    last_name = Column(String, nullable=True)

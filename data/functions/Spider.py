@@ -1,10 +1,10 @@
 from data.containers.sources import channels
 from telethon.sync import TelegramClient
 from telethon.tl.functions.messages import GetHistoryRequest
-from NewsDistributor import add_news
+from data.functions.Distributor import add_news
 from datetime import datetime, timedelta
 from data.containers.config import parse_api_id, parse_api_hash
-import pytz
+from pytz import UTC
 
 db_path = '/Users/Acer/Documents/Programming/TG_RECOMENDATIONS_BOT/data/db' \
           '/databases/database.db'
@@ -12,7 +12,7 @@ db_path = '/Users/Acer/Documents/Programming/TG_RECOMENDATIONS_BOT/data/db' \
 
 def parse_channel(client: TelegramClient, ch,
                   messages_to_parse: int = 10):
-    utc = pytz.UTC
+    utc = UTC
 
     parse_time = datetime.now()
     parse_time -= timedelta(hours=1, minutes=parse_time.minute,
