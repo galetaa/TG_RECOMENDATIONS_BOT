@@ -1,8 +1,9 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import JobQueue, CallbackQueryHandler
 from data.containers import pattern_messages
 from data.containers.config import bot_token
 from data.containers import keyboards
-from data.functions import Chooser, Spider
+from data.functions import Chooser, Spider, Reactions
 import data.db.db_functions as db_functions
 
 
@@ -24,9 +25,18 @@ def settings(update, context):
 
 def news(update, context):
     user = update.message.from_user
-    text = Chooser.assign_news_to_user(user)[1]
+    news_id, text = Chooser.assign_news_to_user(user)
+    keyboard = keyboards.get_reactions_keyboard(news_id)
     update.message.reply_text(text,
-                              reply_markup=keyboards.get_news_keyboard)
+                              reply_markup=keyboard)
+
+
+def reactions(update, context):
+    user = update.callback_query.from_user
+    query = update.callback_query
+    variant = query.data
+    query.answer()
+    Reactions.update_interests(user, variant)
 
 
 def adding_handlers(disp):
@@ -34,6 +44,8 @@ def adding_handlers(disp):
     disp.add_handler(CommandHandler("settings", settings))
     disp.add_handler(MessageHandler(Filters.text('Получить новость'),
                                     news))
+    disp.add_handler(CallbackQueryHandler(reactions))
+    # disp
 
 
 def main():
@@ -41,6 +53,7 @@ def main():
     TOKEN = bot_token
     UPDATER = Updater(TOKEN, use_context=True)
     DISPATCHER = UPDATER.dispatcher
+    job = UPDATER.job_queue
     adding_handlers(DISPATCHER)
 
     UPDATER.start_polling()

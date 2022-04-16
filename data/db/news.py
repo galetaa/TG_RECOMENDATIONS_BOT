@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String
-from .db_session import SqlAlchemyBase
+from data.db.db_session import SqlAlchemyBase
 
 
 class News(SqlAlchemyBase):

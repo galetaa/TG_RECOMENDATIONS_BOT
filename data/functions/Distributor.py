@@ -25,9 +25,6 @@ def add_news(msg: Message, db_path: str, minimum_mark: int = 0) -> None:
     if message_text == '' or message_text is None:
         return None
 
-    message_media = msg.media
-    # work with media
-    current_date_time = datetime.now()
     message_categories_marks = get_categories_marks(message_text, minimum_mark)
     param_list = [message_text] + message_categories_marks
 

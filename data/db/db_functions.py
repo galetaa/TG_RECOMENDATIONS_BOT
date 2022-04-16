@@ -25,9 +25,17 @@ def get_news() -> list:
 def get_news_text(news_id: int) -> list:
     db_session.global_init(db_path)
     db_sess = db_session.create_session()
-    news = db_sess.query(News).filter_by(id=news_id).first()
+    news_db = db_sess.query(News).filter_by(id=news_id).first()
     db_sess.close()
-    return [news.id, news.text]  # add picture
+    return [news_db.id, news_db.text]
+
+
+def get_news_info(news_id: int) -> list:
+    db_session.global_init(db_path)
+    db_sess = db_session.create_session()
+    news_db = db_sess.query(News).filter_by(id=news_id).first()
+    db_sess.close()
+    return news_db.__list__()
 
 
 def get_user_interests(user: TelegramUser) -> list:
@@ -49,6 +57,25 @@ def edit_user_read_news(user: TelegramUser, new_news: str = '',
     else:
         pre_str = user_db.read_news
         user_db.read_news = pre_str + new_news
+    db_sess.commit()
+    db_sess.close()
+
+
+def edit_user_interests(user: TelegramUser, mark: str,
+                        interests: list) -> None:
+    db_session.global_init(db_path)
+    db_sess = db_session.create_session()
+    user_db = db_sess.query(UserInterests).filter_by(user_id=user.id).first()
+    params = user_db.__list__()
+    db_sess.delete(user_db)
+    if mark == '+':
+        for interest_index in interests:
+            params[interest_index + 1] += 1
+    elif mark == '-':
+        for interest_index in interests:
+            params[interest_index + 1] -= 1
+    user_db = UserInterests(*params)
+    db_sess.add(user_db)
     db_sess.commit()
     db_sess.close()
 

@@ -1,1 +1,1 @@
-from . import users, news, userinterests
+from data.db import users, news, userinterests

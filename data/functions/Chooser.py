@@ -1,6 +1,6 @@
 from telegram.user import User as TelegramUser
-from data.db.db_functions import get_user_interests, get_news, \
-    get_news_text, edit_user_read_news
+from data.db.db_functions import get_user_interests, get_news
+from data.db.db_functions import get_news_text, edit_user_read_news
 
 
 def choose_news_for_user(user: TelegramUser) -> int:

@@ -7,8 +7,13 @@ settings_keyboard = ReplyKeyboardMarkup([['Сообщения по-распис�
                                         one_time_keyboard=True)
 
 get_news_keyboard = ReplyKeyboardMarkup([['Получить новость']],
-                                        one_time_keyboard=True)
+                                        one_time_keyboard=False)
 
-reactions_keyborad = InlineKeyboardMarkup.from_row(
-    [InlineKeyboardButton(text='👍', callback_data='+'),
-     InlineKeyboardButton(text='👎', callback_data='-')])
+
+def get_reactions_keyboard(news_id: int) -> InlineKeyboardMarkup:
+    reactions_keyborad = InlineKeyboardMarkup.from_row(
+        [InlineKeyboardButton(text='👍',
+                              callback_data='+' + ' ' + str(news_id)),
+         InlineKeyboardButton(text='👎',
+                              callback_data='-' + ' ' + str(news_id), )], )
+    return reactions_keyborad

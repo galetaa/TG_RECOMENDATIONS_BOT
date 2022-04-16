@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
-from .db_session import SqlAlchemyBase
-from .users import User
+from data.db.db_session import SqlAlchemyBase
+from data.db.users import User
 
 
 class UserInterests(SqlAlchemyBase):
@@ -23,6 +23,22 @@ class UserInterests(SqlAlchemyBase):
     hst_sci = Column(Integer, nullable=True, default=0)
 
     # tbc...
+    def __init__(self, user_id: int = 0, read_news: str = '',
+                 rus_plt: int = 0, usa_plt: int = 0, eur_plt: int = 0,
+                 ftb_spt: int = 0, bsk_spt: int = 0, hck_spt: int = 0,
+                 spc_sci: int = 0, mth_sci: int = 0, hst_sci: int = 0):
+        if user_id != 0:
+            self.user_id = user_id
+        self.read_news = read_news
+        self.rus_plt = rus_plt
+        self.usa_plt = usa_plt
+        self.eur_plt = eur_plt
+        self.ftb_spt = ftb_spt
+        self.bsk_spt = bsk_spt
+        self.spc_sci = spc_sci
+        self.hck_spt = hck_spt
+        self.mth_sci = mth_sci
+        self.hst_sci = hst_sci
 
     def __list__(self):
         return [self.user_id, self.read_news, self.rus_plt, self.usa_plt,
