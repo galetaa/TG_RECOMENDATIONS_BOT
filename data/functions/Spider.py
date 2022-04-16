@@ -1,4 +1,5 @@
 from data.containers.sources import channels
+from data.db.db_functions import get_news, delete_news
 from telethon.sync import TelegramClient, Message
 from telethon.tl.functions.messages import GetHistoryRequest
 from data.functions.Distributor import add_news
@@ -49,7 +50,13 @@ def message_is_correct(msg: Message):
     return True
 
 
+def clear_old_news(news_ids: list):
+    for news_id in news_ids:
+        delete_news(news_id)
+
+
 def parse_all_channels():
+    old_news_ids = get_news(id_only=True)
     api_id = parse_api_id
     api_hash = parse_api_hash
 
@@ -59,6 +66,8 @@ def parse_all_channels():
     for chn in channels:
         channel_entity = client.get_entity(chn)
         parse_channel(client, channel_entity)
+
+    clear_old_news(news_ids=old_news_ids)
 
 
 if __name__ == '__main__':

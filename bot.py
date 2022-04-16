@@ -1,3 +1,5 @@
+import datetime
+
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from telegram.ext import JobQueue, CallbackQueryHandler
 from data.containers import pattern_messages
@@ -48,12 +50,20 @@ def adding_handlers(disp):
     # disp
 
 
+def run_spider(job_que):
+    Spider.parse_all_channels()
+    job_que.run_repeating(run_spider(job_que), interval=datetime.timedelta(
+        hours=1))
+
+
 def main():
     Spider.parse_all_channels()
     TOKEN = bot_token
     UPDATER = Updater(TOKEN, use_context=True)
     DISPATCHER = UPDATER.dispatcher
+
     job = UPDATER.job_queue
+    job.run_repeating(run_spider(job), interval=datetime.timedelta(hours=1))
     adding_handlers(DISPATCHER)
 
     UPDATER.start_polling()

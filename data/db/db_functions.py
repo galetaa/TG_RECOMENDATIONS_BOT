@@ -14,10 +14,13 @@ def user_exists(user_to_check: TelegramUser) -> bool:
     return db_sess.query(User.id).filter_by(id=user_id).first() is not None
 
 
-def get_news() -> list:
+def get_news(id_only: bool = False) -> list:
     db_session.global_init(db_path)
     db_sess = db_session.create_session()
-    news_db = [x.__list__() for x in db_sess.query(News).distinct().all()]
+    if id_only:
+        news_db = [x[0] for x in db_sess.query(News.id).distinct().all()]
+    else:
+        news_db = [x.__list__() for x in db_sess.query(News).distinct().all()]
     db_sess.close()
     return news_db
 
@@ -76,6 +79,15 @@ def edit_user_interests(user: TelegramUser, mark: str,
             params[interest_index + 1] -= 1
     user_db = UserInterests(*params)
     db_sess.add(user_db)
+    db_sess.commit()
+    db_sess.close()
+
+
+def delete_news(news_id: int) -> None:
+    db_session.global_init(db_path)
+    db_sess = db_session.create_session()
+    news_db = db_sess.query(News).filter_by(id=news_id).first()
+    db_sess.delete(news_db)
     db_sess.commit()
     db_sess.close()
 
