@@ -11,11 +11,16 @@ def choose_news_for_user(user: TelegramUser) -> int:
         for i in range(1, len(new_s) - 1):
             new_s[i] *= interests[2:][i]
     result = sorted(news, key=lambda x: sum(x[1:]))[-1]
-    return result[0]
+    if result:
+        return result[0]
+    else:
+        return -1
 
 
-def assign_news_to_user(user: TelegramUser):
+def assign_news_to_user(user: TelegramUser) -> list:
     news_id = choose_news_for_user(user)
+    if news_id == -1:
+        return [-1, -1]
     news_id_and_text = get_news_text(news_id)
     edit_user_read_news(user=user, new_news=str(news_id) + ' ')
     return news_id_and_text

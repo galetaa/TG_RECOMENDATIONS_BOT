@@ -71,12 +71,11 @@ def edit_user_interests(user: TelegramUser, mark: str,
     user_db = db_sess.query(UserInterests).filter_by(user_id=user.id).first()
     params = user_db.__list__()
     db_sess.delete(user_db)
-    if mark == '+':
-        for interest_index in interests:
-            params[interest_index + 1] += 1
-    elif mark == '-':
-        for interest_index in interests:
-            params[interest_index + 1] -= 1
+    for interest_index in interests:
+        if mark == '+':
+            params[interest_index + 2] += 1
+        elif mark == '-':
+            params[interest_index + 2] -= 1
     user_db = UserInterests(*params)
     db_sess.add(user_db)
     db_sess.commit()

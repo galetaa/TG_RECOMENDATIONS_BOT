@@ -2,7 +2,7 @@ from nltk.corpus import stopwords
 from pymorphy2 import MorphAnalyzer
 
 
-def is_not_punctuation(symbol: str):
+def is_not_punctuation(symbol: str) -> bool:
     acceptable_symbols = set(
         'абвгдеёжзийклмнопрстуфхцчшщъыьэюяabcdefghijklmnopqrstuvwxyz \n')
 
@@ -11,7 +11,7 @@ def is_not_punctuation(symbol: str):
     return False
 
 
-def formate_text(text: str):
+def formate_text(text: str) -> list:
     pymorph = MorphAnalyzer()
     stoppers = set(stopwords.words('russian'))
 

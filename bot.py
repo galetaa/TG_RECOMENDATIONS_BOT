@@ -1,7 +1,7 @@
 import datetime
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from telegram.ext import JobQueue, CallbackQueryHandler
+from telegram.ext import CallbackQueryHandler
 from data.containers import pattern_messages
 from data.containers.config import bot_token
 from data.containers import keyboards
@@ -28,9 +28,12 @@ def settings(update, context):
 def news(update, context):
     user = update.message.from_user
     news_id, text = Chooser.assign_news_to_user(user)
-    keyboard = keyboards.get_reactions_keyboard(news_id)
-    update.message.reply_text(text,
-                              reply_markup=keyboard)
+    if news_id == -1 and text == -1:
+        update.message.reply_text(pattern_messages.THERE_IS_NO_NEWS)
+    else:
+        keyboard = keyboards.get_reactions_keyboard(news_id)
+        update.message.reply_text(text,
+                                  reply_markup=keyboard)
 
 
 def reactions(update, context):
@@ -41,29 +44,31 @@ def reactions(update, context):
     Reactions.update_interests(user, variant)
 
 
+def back(update, context):
+    keyboard = keyboards.get_news_keyboard
+    update.message.reply_text(pattern_messages.GET_YOUR_NEWS,
+                              reply_markup=keyboard)
+
+
 def adding_handlers(disp):
     disp.add_handler(CommandHandler("start", start))
     disp.add_handler(CommandHandler("settings", settings))
     disp.add_handler(MessageHandler(Filters.text('Получить новость'),
                                     news))
+    disp.add_handler(MessageHandler(Filters.text('Назад'),
+                                    back))
+
     disp.add_handler(CallbackQueryHandler(reactions))
-    # disp
-
-
-def run_spider(job_que):
-    Spider.parse_all_channels()
-    job_que.run_repeating(run_spider(job_que), interval=datetime.timedelta(
-        hours=1))
 
 
 def main():
-    Spider.parse_all_channels()
     TOKEN = bot_token
     UPDATER = Updater(TOKEN, use_context=True)
     DISPATCHER = UPDATER.dispatcher
-
-    job = UPDATER.job_queue
-    job.run_repeating(run_spider(job), interval=datetime.timedelta(hours=1))
+    JOB_QUEUE = UPDATER.job_queue
+    Spider.parse_all_channels()
+    JOB_QUEUE.run_repeating(Spider.parse_all_channels,
+                            interval=datetime.timedelta(hours=1))
     adding_handlers(DISPATCHER)
 
     UPDATER.start_polling()

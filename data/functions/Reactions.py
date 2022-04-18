@@ -8,6 +8,6 @@ def update_interests(user: TelegramUser, reaction: str) -> None:
     news = get_news_info(news_id)
     main_interests_indexes = []
     for index in range(len(news[1:])):
-        if news[index] == max(news[1:]):
-            main_interests_indexes.append(index)
+        if news[index] == max(news[1:]) and news[index] != 0:
+            main_interests_indexes.append(index - 1)
     edit_user_interests(user, mark, main_interests_indexes)
