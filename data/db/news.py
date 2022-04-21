@@ -18,14 +18,21 @@ class News(SqlAlchemyBase):
     hck_spt = Column(Integer, nullable=True, default=0)
 
     spc_sci = Column(Integer, nullable=True, default=0)
-    mth_sci = Column(Integer, nullable=True, default=0)
+    all_sci = Column(Integer, nullable=True, default=0)
     hst_sci = Column(Integer, nullable=True, default=0)
+
+    cin_ent = Column(Integer, nullable=True, default=0)
+    msc_ent = Column(Integer, nullable=True, default=0)
+    sks_tch = Column(Integer, nullable=True, default=0)
+    itc_tch = Column(Integer, nullable=True, default=0)
+    gms_tch = Column(Integer, nullable=True, default=0)
+    bsn_tch = Column(Integer, nullable=True, default=0)
 
     # tbc...
     def __init__(self, text: str,
-                 rus_plt: int, usa_plt: int, eur_plt: int, ftb_spt: int,
-                 bsk_spt: int, hck_spt: int, spc_sci: int, mth_sci: int,
-                 hst_sci: int):
+                 rus_plt, usa_plt, eur_plt, ftb_spt, bsk_spt, hck_spt, spc_sci,
+                 all_sci, hst_sci, cin_ent, msc_ent, sks_tch, itc_tch, gms_tch,
+                 bsn_tch):
         self.text = text
         self.rus_plt = rus_plt
         self.usa_plt = usa_plt
@@ -34,10 +41,18 @@ class News(SqlAlchemyBase):
         self.bsk_spt = bsk_spt
         self.spc_sci = spc_sci
         self.hck_spt = hck_spt
-        self.mth_sci = mth_sci
+        self.all_sci = all_sci
         self.hst_sci = hst_sci
+        self.cin_ent = cin_ent
+        self.msc_ent = msc_ent
+        self.sks_tch = sks_tch
+        self.itc_tch = itc_tch
+        self.gms_tch = gms_tch
+        self.bsn_tch = bsn_tch
 
     def __list__(self):
-        return [self.id, self.rus_plt, self.usa_plt,
-                self.eur_plt, self.ftb_spt, self.bsk_spt, self.hck_spt,
-                self.spc_sci, self.mth_sci, self.hst_sci]
+        return [self.id,
+                self.rus_plt, self.usa_plt, self.eur_plt, self.ftb_spt,
+                self.bsk_spt, self.hck_spt, self.spc_sci, self.all_sci,
+                self.hst_sci, self.cin_ent, self.msc_ent, self.sks_tch,
+                self.itc_tch, self.gms_tch, self.bsn_tch]
