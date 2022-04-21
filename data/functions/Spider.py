@@ -1,3 +1,6 @@
+# -----------------------------------------------------------------------------
+# Файл реализующий парсинг новостей.
+# -----------------------------------------------------------------------------
 from data.containers.sources import channels
 from data.db.db_functions import get_news, delete_news
 from telethon.sync import TelegramClient, Message
@@ -11,18 +14,20 @@ from pytz import UTC
 
 import asyncio
 
-db_path = '/Users/Acer/Documents/Programming/TG_RECOMENDATIONS_BOT/data/db' \
-          '/databases/database.db'
 
-
+# ф-ия выполняющая парсинг по отдельному каналу
 def parse_channel(client: TelegramClient, channel,
                   messages_to_parse: int = 10) -> None:
+    # получение прошлого часа, чтобы за это время запрашивались новости
     utc = UTC
     parse_time = datetime.now()
     parse_time -= timedelta(hours=1, minutes=parse_time.minute,
                             seconds=parse_time.second,
                             microseconds=parse_time.microsecond)
+
+    # локализация времени
     parse_time = utc.localize(parse_time)
+
     try:
         last_messages_history = client(GetHistoryRequest(
             peer=channel,
@@ -37,12 +42,14 @@ def parse_channel(client: TelegramClient, channel,
         for msg in last_messages_history.messages:
             msg_date = msg.date + timedelta(hours=3)
             if msg_date > parse_time and message_is_correct(msg):
-                add_news(msg, db_path)
+                add_news(msg)
         print('[ ' + channel.title + ' ]' + ' --- Parsed')
+
     except Exception:
         print('[ ' + channel.title + ' ]' + ' --- Error with parse')
 
 
+# ф-ия проверки на запретные слова
 def message_is_correct(msg: Message) -> bool:
     if msg.forward is not None:
         return False
@@ -55,11 +62,13 @@ def message_is_correct(msg: Message) -> bool:
     return True
 
 
+# ф-ия очистки старых новостей
 def clear_old_news(news_ids: list) -> None:
     for news_id in news_ids:
         delete_news(news_id)
 
 
+# основная ф-ия, выполняющая парсинг всех каналов из списка
 def parse_all_channels(context=None) -> None:
     old_news_ids = get_news(id_only=True)
     api_id = parse_api_id

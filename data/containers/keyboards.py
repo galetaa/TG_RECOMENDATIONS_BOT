@@ -1,5 +1,5 @@
-from telegram import ReplyKeyboardMarkup, InlineKeyboardMarkup, \
-    InlineKeyboardButton
+from telegram import ReplyKeyboardMarkup, InlineKeyboardMarkup
+from telegram import InlineKeyboardButton
 
 settings_keyboard = ReplyKeyboardMarkup([['Удалить мои данные'],
                                          ['Назад']],

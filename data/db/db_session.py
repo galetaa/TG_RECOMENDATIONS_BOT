@@ -1,25 +1,23 @@
 from sqlalchemy import create_engine
+from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.ext.declarative import declarative_base
+from data.containers.config import DATABASE
 
 SqlAlchemyBase = declarative_base()
 
 __factory = None
 
 
-def global_init(db_file):
+def global_init():
     global __factory
 
     if __factory:
         return
 
-    if not db_file or not db_file.strip():
-        raise Exception("Необходимо указать файл базы данных.")
+    print(f"Подключение к базе данных")
 
-    conn_str = f'sqlite:///{db_file.strip()}?check_same_thread=False'
-    print(f"Подключение к базе данных по адресу {conn_str}")
-
-    engine = create_engine(conn_str, echo=False)
+    engine = create_engine(URL(**DATABASE))
     __factory = sessionmaker(bind=engine)
 
     from . import __all_models

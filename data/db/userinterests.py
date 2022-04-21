@@ -1,13 +1,11 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String
 from data.db.db_session import SqlAlchemyBase
-from data.db.users import User
 
 
 class UserInterests(SqlAlchemyBase):
     __tablename__ = 'users_interests'
 
-    user_id = Column(Integer, ForeignKey(
-        User.id), primary_key=True)
+    user_id = Column(Integer, primary_key=True)
     read_news = Column(String, nullable=True, default='')
 
     rus_plt = Column(Integer, nullable=True, default=0)

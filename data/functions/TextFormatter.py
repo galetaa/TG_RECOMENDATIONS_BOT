@@ -1,7 +1,11 @@
+# -----------------------------------------------------------------------------
+# Файл реализующий форматирование текста новости.
+# -----------------------------------------------------------------------------
 from nltk.corpus import stopwords
 from pymorphy2 import MorphAnalyzer
 
 
+# ф-ия проверки символа,отсеевает лишние
 def is_not_punctuation(symbol: str) -> bool:
     acceptable_symbols = set(
         'абвгдеёжзийклмнопрстуфхцчшщъыьэюяabcdefghijklmnopqrstuvwxyz \n')
@@ -11,6 +15,7 @@ def is_not_punctuation(symbol: str) -> bool:
     return False
 
 
+# ф-ия отсеивающая стоп-слова и приводящая к начальной форме другие
 def formate_text(text: str) -> list:
     pymorph = MorphAnalyzer()
     stoppers = set(stopwords.words('russian'))
