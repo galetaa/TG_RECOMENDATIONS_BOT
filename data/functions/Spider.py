@@ -13,6 +13,7 @@ from data.containers.key_words import wrn_wrd
 from pytz import UTC
 
 import asyncio
+import traceback
 
 
 # ф-ия выполняющая парсинг по отдельному каналу
@@ -46,7 +47,7 @@ def parse_channel(client: TelegramClient, channel,
         print('[ ' + channel.title + ' ]' + ' --- Parsed')
 
     except Exception:
-        print(Exception.__name__)
+        print(traceback.print_exc())
         print('[ ' + channel.title + ' ]' + ' --- Error with parse')
 
 
