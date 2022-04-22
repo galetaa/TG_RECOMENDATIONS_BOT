@@ -46,6 +46,7 @@ def parse_channel(client: TelegramClient, channel,
         print('[ ' + channel.title + ' ]' + ' --- Parsed')
 
     except Exception:
+        print(Exception.__name__)
         print('[ ' + channel.title + ' ]' + ' --- Error with parse')
 
 
