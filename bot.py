@@ -97,7 +97,7 @@ def main():
     JOB_QUEUE = UPDATER.job_queue
 
     # после запуска первый раз парсит новости, затем каждый час
-    # Spider.parse_all_channels()
+    Spider.parse_all_channels()
     JOB_QUEUE.run_repeating(Spider.parse_all_channels,
                             interval=datetime.timedelta(hours=1))
     adding_handlers(DISPATCHER)
