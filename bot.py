@@ -8,7 +8,7 @@ from telegram.ext import CallbackQueryHandler
 from data.containers import pattern_messages
 from data.containers.config import bot_token
 from data.containers import keyboards
-from data.functions import Chooser, Spider, Reactions
+from data.functions import Chooser, Spider, Reactions, Weather
 import data.db.db_functions as db_functions
 
 
@@ -34,12 +34,11 @@ def settings(update, context):
 def news(update, context):
     user = update.message.from_user
     news_id, text = Chooser.assign_news_to_user(user)
-
     if news_id == -1 and text == -1:
         update.message.reply_text(pattern_messages.THERE_IS_NO_NEWS)
 
     else:
-        # вместе с сообщением отправляет понель с реакциями
+        # вместе с сообщением отправляет панель с реакциями
         keyboard = keyboards.get_reactions_keyboard(news_id)
         update.message.reply_text(text,
                                   reply_markup=keyboard)
@@ -50,10 +49,23 @@ def reactions(update, context):
     user = update.callback_query.from_user
     query = update.callback_query
     variant = query.data
-
     query.answer()
-
     Reactions.update_interests(user, variant)
+
+
+# ф-ия отвечающая на команду '/weather'
+def location(update, context):
+    keyboard = keyboards.get_location_keyboard
+    update.message.reply_text(pattern_messages.GET_YOUR_WEATHER,
+                              reply_markup=keyboard)
+
+
+# ф-ия отвечающая на местоположение пользователя
+def weather(update, context):
+    keyboard = keyboards.get_news_keyboard
+    wethr = Weather.get_weather(update.message)
+    update.message.reply_text(wethr,
+                              reply_markup=keyboard)
 
 
 # ф-ия возвращающая пользователя к стандартному сценарию, когда он получает
@@ -68,11 +80,12 @@ def back(update, context):
 def adding_handlers(disp):
     disp.add_handler(CommandHandler("start", start))
     disp.add_handler(CommandHandler("settings", settings))
+    disp.add_handler(CommandHandler("weather", location))
     disp.add_handler(MessageHandler(Filters.text(
         pattern_messages.GET_NEWS_TRIGGER), news))
     disp.add_handler(MessageHandler(Filters.text(
         pattern_messages.GET_BACK_TRIGGER), back))
-
+    disp.add_handler(MessageHandler(Filters.location, weather))
     disp.add_handler(CallbackQueryHandler(reactions))
 
 
@@ -84,12 +97,10 @@ def main():
     JOB_QUEUE = UPDATER.job_queue
 
     # после запуска первый раз парсит новости, затем каждый час
-    Spider.parse_all_channels()
+    # Spider.parse_all_channels()
     JOB_QUEUE.run_repeating(Spider.parse_all_channels,
                             interval=datetime.timedelta(hours=1))
-
     adding_handlers(DISPATCHER)
-
     UPDATER.start_polling()
     UPDATER.idle()
 

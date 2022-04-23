@@ -1,6 +1,7 @@
 parse_api_id = 14827635
 parse_api_hash = "7b7ee3236d24064c808e6000851011e3"
-
+weather_server = 'https://api.weather.yandex.ru/v2/forecast'
+weather_api_key = 'e865e222-c92b-4800-ba8e-21a9f217ba90'
 bot_token = '5319968426:AAGYffM6JWU2nX4jbEAiC-wnVkPlUo_ED98'
 DATABASE = {
     'drivername': 'postgresql',
